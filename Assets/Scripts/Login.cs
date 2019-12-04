@@ -53,9 +53,8 @@ public class Login : MonoBehaviour
     public bool caseSensitiveCode = true;
     string usernameForResetting;
     string validationCode;
-
     string passwordError = "";
-   
+
     public void DisplayScreen(GameObject screen)
     {
         loginScreen.SetActive(false);
@@ -208,8 +207,8 @@ public class Login : MonoBehaviour
         Debug.Log(webRequest.downloadHandler.text);
         if (webRequest.downloadHandler.text == "Login successful")
         {
-            print("Loading scene");
-            SceneManager.LoadScene(1);
+            //LoadGame(username);
+            StartCoroutine(LoadGame(username));
         }
         else
         {
@@ -333,4 +332,25 @@ public class Login : MonoBehaviour
         }
     }
     #endregion
+
+    IEnumerator LoadGame(string username)
+    {
+        // DO IMPORTANT PLAYER LOADING STUFF HERE
+
+        print("Loading scene");
+
+
+
+        LoadGameData lgd = GetComponent<LoadGameData>();
+
+        SceneManager.LoadScene(lgd.gameSceneName);
+
+        yield return new WaitForEndOfFrame();
+
+        GameObject spawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint");
+
+        StartCoroutine(SaveAndLoad.LoadCharacter(username, lgd.playerPrefab, spawnPoint.transform));
+
+
+    }
 }

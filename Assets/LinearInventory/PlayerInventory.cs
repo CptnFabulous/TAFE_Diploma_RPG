@@ -49,36 +49,15 @@ public class PlayerInventory : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        #region Add a bunch of items for testing
-        Add(new ItemStack { item = ItemData.GetItemByName("Magic Mushroom"), quantity = 69 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Magic Mushroom"), quantity = 40 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Jungle Beans"), quantity = 2 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Mana Elixir"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Stamina Booster"), quantity = 3 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        Add(new ItemStack { item = ItemData.GetItemByName("Necronomicon"), quantity = 1 });
-        #endregion
+        /*
+        if (items.Count <= 0)
+        {
+            items = ItemData.LoadInventory("Magic Mushroom,99,Necronomicon,1,Magic Mushroom,10,Necronomicon,1,Jungle Beans,2,Necronomicon,1,Mana Elixir,1,Necronomicon,1,Stamina Booster,3,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1");
+        }
+        */
+        //inventoryScreen.enabled = false;
+
+        //inventoryScreen.gameObject.SetActive(false);
 
         //sortIndex = System.Enum.GetValues(typeof(ItemType)).Length;
         //sortPrev.onClick.AddListener(() => CycleSort(-1));
@@ -96,12 +75,13 @@ public class PlayerInventory : MonoBehaviour
             RefreshScreen(items);
             prevItems = items;
         }
-
+        /*
         if (Input.GetKeyDown(toggleButton))
         {
             inventoryScreen.enabled = !inventoryScreen.enabled;
+            //inventoryScreen.gameObject.SetActive(!inventoryScreen.gameObject.activeSelf);
         }
-
+        */
         /*
         if (inventoryScreen.enabled == true) // If inventory screen is showing
         {
@@ -129,7 +109,7 @@ public class PlayerInventory : MonoBehaviour
         {
             foreach (ItemStack inventoryStack in items) // Checks existing slots for
             {
-                print(inventoryStack.item + "/" + inventoryStack.quantity);
+                //print(inventoryStack.item + "/" + inventoryStack.quantity);
 
                 if (inventoryStack.item == itemsObtained.item) // If a stack of the obtained item already exists but has not been filled yet
                 {
