@@ -154,8 +154,8 @@ public class PlayerDragAndDropInventory : MonoBehaviour
 
     void Equip(Item equippable, EquipSlot slot)
     {
-        slot.item = equippable;
-        Instantiate(equippable.mesh, slot.location);
+        //slot.item = equippable;
+        //Instantiate(equippable.mesh, slot.location);
     }
 
 }

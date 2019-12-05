@@ -18,7 +18,7 @@ MonoBehaviour:
     by sweaty, muscly warriors from all across the land. Phwoar, it's getting hot
     in here.
   icon: {fileID: 21300000, guid: 7e8097271be361c4d952099fce0dc612, type: 3}
-  mesh: {fileID: 0}
+  mesh: {fileID: 4200415721341979779, guid: 50e58d548e087c544a40951fc50eb428, type: 3}
   miscellaneousStats: 
   maxStack: 1
   price: 300

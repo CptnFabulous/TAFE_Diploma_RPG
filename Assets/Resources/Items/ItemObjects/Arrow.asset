@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dc8d9411b79e54e9dd33ba51485a2c, type: 3}
+  m_Name: Arrow
+  m_EditorClassIdentifier: 
+  type: 0
+  description: A simple wooden projectile tipped with a sharp, aerodynamic shard of
+    metal.
+  icon: {fileID: 21300000, guid: f097e15f9316b6b4e82a3b78947dbf19, type: 3}
+  mesh: {fileID: 0}
+  miscellaneousStats: 
+  maxStack: 99
+  price: 25
