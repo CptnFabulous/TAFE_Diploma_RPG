@@ -5,19 +5,12 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
-public class PlayerHandler : MonoBehaviour
+public class PlayerHandler : MonoBehaviour // A class used to easily identify a player
 {
-    public string properName;
-    
     [HideInInspector] public PlayerInventory pi;
 
     public void Awake()
     {
-        pi = GetComponent<PlayerInventory>();
-    }
-
-    public void QuitGame()
-    {
-
+        pi = GetComponent<PlayerInventory>(); // Obtains inventory data
     }
 }

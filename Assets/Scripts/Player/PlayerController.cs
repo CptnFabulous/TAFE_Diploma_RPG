@@ -212,19 +212,19 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.MovePosition(transform.position + movementValue * Time.fixedDeltaTime);
+        rb.MovePosition(transform.position + movementValue * Time.fixedDeltaTime); // Moves character
 
-        if (willJump)
+        if (willJump) //Applies jump force if jump command is input
         {
             rb.velocity += transform.up * forceJump;
             willJump = false;
             jumpTimer = 0;
         }
 
-        rb.AddForce(Physics.gravity * rb.mass);
+        rb.AddForce(Physics.gravity * rb.mass); // Adds downward force for more realistic and weighty gravity
     }
 
-    private void LateUpdate()
+    private void LateUpdate() // Updates movement speed stats, used for crouching code, disregard otherwise
     {
         speedModifier.CheckStatDuration();
         sensitivityModifier.CheckStatDuration();

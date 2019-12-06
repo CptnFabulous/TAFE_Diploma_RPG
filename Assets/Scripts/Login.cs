@@ -54,8 +54,8 @@ public class Login : MonoBehaviour
     string usernameForResetting;
     string validationCode;
     string passwordError = "";
-
-    public void DisplayScreen(GameObject screen)
+    
+    public void DisplayScreen(GameObject screen) // Disables all screens and displays specified screen
     {
         loginScreen.SetActive(false);
         createAccountScreen.SetActive(false);
@@ -67,19 +67,22 @@ public class Login : MonoBehaviour
 
     bool ValidatePassword(string password, string confirmPassword)
     {
-        passwordError = "";
+        passwordError = ""; // Empty string for error log
 
+        // Set of bools to determine which password criterias are met
         bool passwordMatches = false;
         bool passwordHasNumbers = false;
         bool passwordHasLowerCaseLetters = false;
         bool passwordHasUpperCaseLetters = false;
 
+        // Checks if both passwords entered are the same
         if (password == confirmPassword)
         {
             passwordMatches = true;
             print("Passwords match.");
         }
 
+        // Scans through password to check for numbers
         string numbers = "0123456789";
         for (int i = 0; i < numbers.Length; i++)
         {
@@ -88,12 +91,12 @@ public class Login : MonoBehaviour
                 passwordHasNumbers = true;
             }
         }
-
         if (passwordHasNumbers == true)
         {
             print("Password contains numbers.");
         }
 
+        // Scans through password to check for lower-case letters
         string lowerCase = "abcdefghijklmnopqrstuvwxyz";
         for (int i = 0; i < lowerCase.Length; i++)
         {
@@ -102,12 +105,12 @@ public class Login : MonoBehaviour
                 passwordHasLowerCaseLetters = true;
             }
         }
-
         if (passwordHasLowerCaseLetters == true)
         {
             print("Password contains lower case letters.");
         }
 
+        // Scans through password to check for upper-case letters
         string upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         for (int i = 0; i < upperCase.Length; i++)
         {
@@ -116,18 +119,18 @@ public class Login : MonoBehaviour
                 passwordHasUpperCaseLetters = true;
             }
         }
-
         if (passwordHasUpperCaseLetters == true)
         {
             print("Password contains upper case letters.");
         }
 
+        // If all bools are true, password is validated
         if (passwordMatches == true && passwordHasNumbers == true && passwordHasLowerCaseLetters == true && passwordHasUpperCaseLetters == true)
         {
             return true;
         }
 
-        // Code past this point only runs if the bool does not return true.
+        // Code past this point only runs if the bool does not return true. Generates error message
         if (passwordMatches == false)
         {
             passwordError += "Passwords do not match!";
@@ -154,12 +157,15 @@ public class Login : MonoBehaviour
     #region Create account
     public void CreateNewUser()
     {
+        // Checks if password is valid and if username does not exceed character limit
         if (ValidatePassword(createPassword.text, confirmCreatePassword.text) && createUsername.text.Length <= usernameCharacterLimit)
         {
+            // Run function to add new user to the database
             StartCoroutine(CreateUser(createUsername.text, createEmail.text, createPassword.text));
         }
         else
         {
+            // Display error log
             string errorMessage = "";
             if (ValidatePassword(createPassword.text, confirmCreatePassword.text) == false)
             {
@@ -176,17 +182,15 @@ public class Login : MonoBehaviour
 
     IEnumerator CreateUser(string username, string email, string password)
     {
-        string createUserURL = "http://localhost/nsirpg/insertuser.php";
-        WWWForm form = new WWWForm();
-        form.AddField("username", username);
-        form.AddField("email", email);
-        form.AddField("password", password);
-        UnityWebRequest webRequest = UnityWebRequest.Post(createUserURL, form);
-        yield return webRequest.SendWebRequest();
+        string createUserURL = "http://localhost/nsirpg/insertuser.php"; // Accesses appropriate PHP file to add a user to the database
+        WWWForm form = new WWWForm(); // Creates new web form
+        form.AddField("username", username); // Adds username to form
+        form.AddField("email", email); // Adds email to form
+        form.AddField("password", password); // Adds password to form
+        UnityWebRequest webRequest = UnityWebRequest.Post(createUserURL, form); // Submits form
+        yield return webRequest.SendWebRequest(); // Waits while form is processed
         Debug.Log(webRequest.downloadHandler.text);
-        createAccountErrorLog.text = webRequest.downloadHandler.text;
-        
-        
+        createAccountErrorLog.text = webRequest.downloadHandler.text; // Displays log output
     }
     #endregion
 
@@ -198,77 +202,59 @@ public class Login : MonoBehaviour
 
     IEnumerator UserLogin(string username, string password)
     {
-        string createUserURL = "http://localhost/nsirpg/login.php";
-        WWWForm form = new WWWForm();
-        form.AddField("username", username);
-        form.AddField("password", password);
-        UnityWebRequest webRequest = UnityWebRequest.Post(createUserURL, form);
-        yield return webRequest.SendWebRequest();
+        string loginURL = "http://localhost/nsirpg/login.php"; // Accesses appropriate PHP file to log in with an account
+        WWWForm form = new WWWForm(); // Accesses appropriate PHP file to add a user to the database
+        form.AddField("username", username); // Adds username to form
+        form.AddField("password", password); // Adds password to form
+        UnityWebRequest webRequest = UnityWebRequest.Post(loginURL, form); // Submits form
+        yield return webRequest.SendWebRequest(); // Waits while form is processed
         Debug.Log(webRequest.downloadHandler.text);
-        if (webRequest.downloadHandler.text == "Login successful")
+        if (webRequest.downloadHandler.text == "Login successful") // Checks log output, if correct message, starts function to load game
         {
             //LoadGame(username);
             StartCoroutine(LoadGame(username));
         }
         else
         {
-            loginErrorLog.text = webRequest.downloadHandler.text;
+            loginErrorLog.text = webRequest.downloadHandler.text; // If login fails, display error log
         }
     }
     #endregion
 
     #region Reset password
-    public void InputChangePassword()
-    {
-        /*
-        bool passwordIsValid = ValidatePassword(changePassword.text, confirmChangePassword.text);
-        if (passwordIsValid == true)
-        {
-            StartCoroutine(UpdatePassword(changeUsername.text, resetPassword.text));
-        }
-        else
-        {
-            string passwordResetError = passwordError;
-            if (codeInput.text != validationCode)
-            {
-                passwordResetError += "Verification code does not match the one sent to the email.";
-            }
-            resetPasswordErrorLog.text = passwordResetError;
-        }
-        */
-    }
-
     public IEnumerator UpdatePassword(string username, string createPassword)
     {
-        string updatePasswordURL = "http://localhost/nsirpg/updatepassword.php";
-        WWWForm form = new WWWForm();
-        form.AddField("username_Post", username);
-        form.AddField("password_Post", createPassword);
-        UnityWebRequest webRequest = UnityWebRequest.Post(updatePasswordURL, form);
-        yield return webRequest.SendWebRequest();
+        string updatePasswordURL = "http://localhost/nsirpg/updatepassword.php"; // Accesses appropriate PHP file to update the user's password
+        WWWForm form = new WWWForm(); // Accesses appropriate PHP file to add a user to the database
+        form.AddField("username_Post", username); // Adds username to form
+        form.AddField("password_Post", createPassword); // Adds password to form
+        UnityWebRequest webRequest = UnityWebRequest.Post(updatePasswordURL, form); // Submits form
+        yield return webRequest.SendWebRequest(); // Waits while form is processed
         Debug.Log(webRequest.downloadHandler.text);
     }
     #endregion
 
     #region Forgot password
-    public void InputResetEmail()
+    public void InputResetEmail() // This function simply allows a coroutine to be run as an event from clicking a button
     {
         StartCoroutine(CheckEmail(resetEmail.text));
     }
 
     public IEnumerator CheckEmail(string email)
     {
-        string checkEmailURL = "http://localhost/nsirpg/checkemail.php";
-        WWWForm form = new WWWForm();
-        form.AddField("email_Post", email);
-        UnityWebRequest webRequest = UnityWebRequest.Post(checkEmailURL, form);
-        yield return webRequest.SendWebRequest();
+        string checkEmailURL = "http://localhost/nsirpg/checkemail.php"; // Accesses appropriate PHP file to check email
+        WWWForm form = new WWWForm(); // Accesses appropriate PHP file to add a user to the database
+        form.AddField("email_Post", email); // Adds email to form
+        UnityWebRequest webRequest = UnityWebRequest.Post(checkEmailURL, form); // Submits form
+        yield return webRequest.SendWebRequest(); // Waits while form is processed
         Debug.Log(webRequest.downloadHandler.text);
 
-        if (webRequest.downloadHandler.text != "User not found")
+        if (webRequest.downloadHandler.text != "User not found") // If form is processed successfully
         {
+            // Obtain username from web request form
             usernameForResetting = webRequest.downloadHandler.text;
             print(usernameForResetting);
+            // Send email to appropriate user's email address
             SendResetEmail(resetEmail.text, usernameForResetting);
         }
         else
@@ -280,22 +266,23 @@ public class Login : MonoBehaviour
 
     public void SendResetEmail(string _email, string _username)
     {
-        validationCode = GenerateCode(codeLength, caseSensitiveCode);
+        validationCode = GenerateCode(codeLength, caseSensitiveCode); // Generate a randomised code for the user to reset their password with
         print(validationCode);
-        MailMessage mail = new MailMessage();
+        MailMessage mail = new MailMessage(); // Creates a new email to send to the user
         mail.From = new MailAddress("sqlunityclasssydney@gmail.com");
         mail.To.Add(_email);
         mail.Subject = "NSIRPG Password Reset";
-        mail.Body = "Hello, " + _username + ",\nReset your password using this code: " + validationCode;
+        mail.Body = "Hello, " + _username + ",\nReset your password using this code: " + validationCode; // Lists player's username and randomly-generated code
         SmtpClient smtpServer = new SmtpClient("smtp.gmail.com");
         smtpServer.Port = portNumber;
         smtpServer.Credentials = new NetworkCredential("sqlunityclasssydney@gmail.com", "sqlpassword") as ICredentialsByHost; // MAKE PASSWORD AND EMAIL INTO PUBLIC VARIABLES
         smtpServer.EnableSsl = true;
         ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate cert, X509Chain chain, SslPolicyErrors policyErrors) { return true; };
-        smtpServer.Send(mail);
+        smtpServer.Send(mail); // Sends email
         Debug.Log("Sending email");
     }
-
+    
+    /*
     string GenerateCode(int length, bool caseSensitive)
     {
         string[] digits = new string[length];
@@ -313,16 +300,37 @@ public class Login : MonoBehaviour
         }
         return finalCode;
     }
+    */
+    string GenerateCode(int length, bool caseSensitive)
+    {
+        // Generates a list of characters, and adds an extra section of lower case letters if caseSensitive is set to true
+        string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        if (caseSensitive == true)
+        {
+            characters += "abcdefghijklmnopqrstuvwxyz";
+        }
+
+        string finalCode = ""; // Declares an empty string to add appropriate variables to
+        for (int i = 0; i < length; i++) // Adds a new character the appropriate number of times based on the length integer
+        {
+            // Randomly selects a character from the characters string, converts it to a string and adds it to the end of the finalCode string.
+            string character = characters[UnityEngine.Random.Range(0, characters.Length - 1)].ToString();
+            finalCode += character;
+        }
+        return finalCode;
+    }
 
     public void CheckCode()
     {
-        bool passwordIsValid = ValidatePassword(resetPassword.text, confirmResetPassword.text);
-        if (passwordIsValid == true && codeInput.text == validationCode)
+        // Checks to validate password, and that the code entered is identical to the one generated
+        if (ValidatePassword(resetPassword.text, confirmResetPassword.text) == true && codeInput.text == validationCode)
         {
+            // Updates player's password
             StartCoroutine(UpdatePassword(usernameForResetting, resetPassword.text));
         }
         else
         {
+            // Generates new error message, with information on if the code matched or not
             string passwordResetError = passwordError;
             if (codeInput.text != validationCode)
             {
@@ -335,22 +343,11 @@ public class Login : MonoBehaviour
 
     IEnumerator LoadGame(string username)
     {
-        // DO IMPORTANT PLAYER LOADING STUFF HERE
-
         print("Loading scene");
-
-
-
-        LoadGameData lgd = GetComponent<LoadGameData>();
-
-        SceneManager.LoadScene(lgd.gameSceneName);
-
-        yield return new WaitForEndOfFrame();
-
-        GameObject spawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint");
-
-        StartCoroutine(SaveAndLoad.LoadCharacter(username, lgd.playerPrefab, spawnPoint.transform));
-
-
+        LoadGameData lgd = GetComponent<LoadGameData>(); // Finds LoadGameData script attached to same GameObject as this script
+        SceneManager.LoadScene(lgd.gameSceneName); // Loads game level as specified in LoadGameData
+        yield return new WaitForEndOfFrame(); // Waits until frame has ended and new scene has loaded
+        GameObject spawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint"); // Finds SpawnPoint object in game level
+        StartCoroutine(SaveAndLoad.LoadCharacter(username, lgd.playerPrefab, spawnPoint.transform)); // Loads player character into scene, using username to load appropriate inventory data
     }
 }

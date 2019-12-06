@@ -13,6 +13,8 @@ public enum GameState
 
 public class GameStateHandler : MonoBehaviour
 {
+    PlayerHandler ph;
+
     [Header("Menus")]
     public Canvas headsUpDisplay;
     public Canvas inventoryScreen;
@@ -24,8 +26,6 @@ public class GameStateHandler : MonoBehaviour
     public string mainMenuSceneName;
 
     GameState currentState;
-
-    PlayerHandler ph;
 
     void Awake()
     {
@@ -42,7 +42,7 @@ public class GameStateHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("AccessMenus"))
+        if (Input.GetButtonDown("AccessMenus")) // Toggles in-game menu/inventory
         {
             if (currentState == GameState.Active)
             {
@@ -54,7 +54,7 @@ public class GameStateHandler : MonoBehaviour
             }
         }
         
-        if (Input.GetButtonDown("Pause"))
+        if (Input.GetButtonDown("Pause")) // Toggles pausing the game
         {
             if (currentState == GameState.Active)
             {
@@ -67,75 +67,63 @@ public class GameStateHandler : MonoBehaviour
         }
     }
 
-
-    /*
-
-        IMPORTANT: Replace ChangeGameState() with different functions for each state, with appropriate variables
-
-    */
     #region Functions for changing game state
     public void PauseGame()
     {
-        currentState = GameState.Paused;
-        Time.timeScale = 0;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        currentState = GameState.Paused; // Set gamestate
+        Time.timeScale = 0; // Time is paused
+        Cursor.lockState = CursorLockMode.None; // Unlock cursor
+        Cursor.visible = true; // Show cursor
         SwitchMenu(pauseMenu);
-        //print(Cursor.lockState + ", " + Cursor.visible);
     }
 
     public void GoIntoMenus()
     {
-        currentState = GameState.InMenus;
-
-        if (pauseWhileInMenus == true)
+        currentState = GameState.InMenus; // Set gamestate
+        if (pauseWhileInMenus == true) // Time is paused, but only if pauseWhileInMenus is enabled
         {
             Time.timeScale = 0;
         }
-        
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        SwitchMenu(inventoryScreen);
-        //print(Cursor.lockState + ", " + Cursor.visible);
+        Cursor.lockState = CursorLockMode.None; // Unlock cursor
+        Cursor.visible = true; // Show cursor
+        SwitchMenu(inventoryScreen); // Switch to appropriate menu
     }
 
     public void ResumeGame()
     {
-        currentState = GameState.Active;
-        Time.timeScale = 1;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        SwitchMenu(headsUpDisplay);
-        //print(Cursor.lockState + ", " + Cursor.visible);
+        currentState = GameState.Active; // Set gamestate
+        Time.timeScale = 1; // Time moves at normal rate
+        Cursor.lockState = CursorLockMode.Locked; // Lock cursor
+        Cursor.visible = false; // Hide cursor
+        SwitchMenu(headsUpDisplay); // Switch to appropriate menu
     }
 
     public void WinGame()
     {
-        currentState = GameState.Won;
-        Time.timeScale = 1;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        SwitchMenu(winMenu);
+        currentState = GameState.Won; // Set gamestate
+        Time.timeScale = 1; // Time moves at normal rate
+        Cursor.lockState = CursorLockMode.None; // Unlock cursor
+        Cursor.visible = true; // Show cursor
+        SwitchMenu(winMenu); // Switch to appropriate menu
     }
 
     public void FailGame()
     {
-        currentState = GameState.Failed;
-        Time.timeScale = 1;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        SwitchMenu(failMenu);
+        currentState = GameState.Failed; // Set gamestate
+        Time.timeScale = 1; // Time moves at normal rate
+        Cursor.lockState = CursorLockMode.None; // Unlock cursor
+        Cursor.visible = true; // Show cursor
+        SwitchMenu(failMenu); // Switch to appropriate menu
     }
     #endregion
 
-
-    public void QuitToMenu()
+    public void QuitToMenu() // Allows coroutine to be run as an event from a button
     {
         print("About to quit to menu");
-        StartCoroutine(SaveAndLoad.SaveAndQuit(ph, mainMenuSceneName));
+        StartCoroutine(SaveAndLoad.SaveAndQuit(ph, mainMenuSceneName)); // Saves inventory data and quits to menu
     }
 
-    void SwitchMenu(Canvas menu)
+    void SwitchMenu(Canvas menu) // Enables desired menu and disables all others
     {
         headsUpDisplay.gameObject.SetActive(false);
         inventoryScreen.gameObject.SetActive(false);
@@ -144,8 +132,6 @@ public class GameStateHandler : MonoBehaviour
         failMenu.gameObject.SetActive(false);
         menu.gameObject.SetActive(true);
     }
-
-    
 }
 
 

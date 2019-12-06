@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class EquipSlot
+public class EquipSlot // Used to easily specify equipment slots
 {
     Item item;
     GameObject itemObject;
@@ -11,29 +11,30 @@ public class EquipSlot
 
     public void Equip(Item i)
     {
-        if (itemObject != null)
+        if (itemObject != null) // If slot is not empty, empty slot and destroy prefab
         {
             Unequip();
         }
-        item = i;
+        item = i; // Specify item type
+        // Specifies itemObject as new item mesh, instantiated in the appropriate position and rotation, then parents it to the equip location.
         itemObject = Object.Instantiate(item.mesh, location.position, location.rotation);
         itemObject.transform.SetParent(location);
     }
 
-    public void Unequip()
+    public void Unequip() // Clears slot and destroys mesh
     {
         item = null;
         Object.Destroy(itemObject);
     }
 
-    public Item CurrentItem()
+    public Item CurrentItem() // Gets item currently equipped
     {
         return item;
     }
 }
 
 [System.Serializable]
-public class ItemStack
+public class ItemStack // A simple class used to easily group together items and quantities
 {
     public Item item;
     public int quantity;

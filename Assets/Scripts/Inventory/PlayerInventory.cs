@@ -52,16 +52,16 @@ public class PlayerInventory : MonoBehaviour
     public EquipSlot rightHandSlot;
     public EquipSlot leftHandSlot;
 
-
+    /*
     // Start is called before the first frame update
     void Start()
     {
-        /*
+        
         if (items.Count <= 0)
         {
-            items = ItemData.LoadInventory("Magic Mushroom,99,Necronomicon,1,Magic Mushroom,10,Necronomicon,1,Jungle Beans,2,Necronomicon,1,Mana Elixir,1,Necronomicon,1,Stamina Booster,3,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1");
+            //items = ItemData.LoadInventory("Magic Mushroom,99,Necronomicon,1,Magic Mushroom,10,Necronomicon,1,Jungle Beans,2,Necronomicon,1,Mana Elixir,1,Necronomicon,1,Stamina Booster,3,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1,Necronomicon,1");
         }
-        */
+        
         //inventoryScreen.enabled = false;
 
         //inventoryScreen.gameObject.SetActive(false);
@@ -71,17 +71,18 @@ public class PlayerInventory : MonoBehaviour
         //sortNext.onClick.AddListener(() => CycleSort(1));
 
     }
-
+    */
     // Update is called once per frame
     void Update()
     {
-        if (prevItems != items)
+        if (prevItems != items) // Checks if items have changed since the last frame
         {
+            // If true, check inventory for item anomalies and refresh inventory (refresh function only works the first time for some reason)
             print("Items updated");
             SanityCheck();
             //SortSlots(sortIndex);
             RefreshScreen(items);
-            prevItems = items;
+            prevItems = items; // prevItems is updated to match items, so checks can continue to occur
         }
     }
 
@@ -89,12 +90,12 @@ public class PlayerInventory : MonoBehaviour
     void SanityCheck()
     {
         //items.RemoveRange(maxSlots, items.Count - maxSlots); // Removes item slots that exceed the max amount
-        items.RemoveAll(s => s == null);
-        items.RemoveAll(s => s.quantity <= 0);
+        items.RemoveAll(s => s == null); // Remove null stacks
+        items.RemoveAll(s => s.quantity <= 0); // Remove stacks with a quantity of zero
 
         foreach (ItemStack s in items)
         {
-            s.quantity = Mathf.Clamp(s.quantity, 0, s.item.maxStack);
+            s.quantity = Mathf.Clamp(s.quantity, 0, s.item.maxStack); // Ensures stacks do not exceed stack limit for each item
         }
 
         if (rightHandSlot.CurrentItem() != null) // If item is equipped
@@ -226,11 +227,13 @@ public class PlayerInventory : MonoBehaviour
     #region GUI elements
     void RefreshScreen(List<ItemStack> itemsToDisplay)
     {
+        // Hide item inspection window
         inspectScreen.gameObject.SetActive(false);
         compareScreen.gameObject.SetActive(false);
         flavourTextScreen.gameObject.SetActive(false);
         optionsScreen.gameObject.SetActive(false);
 
+        // Destroy buttons currently existing in slot screen
         Transform[] stuffInSlotScreen = slotScreen.GetComponentsInChildren<Transform>();
         foreach (Transform t in stuffInSlotScreen)
         {
@@ -240,17 +243,17 @@ public class PlayerInventory : MonoBehaviour
             }
         }
         
-        slotInfo.text = "SLOTS: " + items.Count + "/" + maxSlots;
+        slotInfo.text = "SLOTS: " + items.Count + "/" + maxSlots; // Update inventory with amount of slots
 
-        slotScreen.sizeDelta = new Vector2(slotScreen.rect.width, itemsToDisplay.Count * slotButtonPrefab.GetComponent<RectTransform>().rect.height);
+        slotScreen.sizeDelta = new Vector2(slotScreen.rect.width, itemsToDisplay.Count * slotButtonPrefab.GetComponent<RectTransform>().rect.height); // Changes scroll area size to match amount of button slots
 
-        for (int i = 0; i < itemsToDisplay.Count; i++)
+        for (int i = 0; i < itemsToDisplay.Count; i++) // Creates new buttons to inspect items
         {
-            ItemStack items = itemsToDisplay[i];
-            Button b = Instantiate(slotButtonPrefab, slotScreen);
+            ItemStack items = itemsToDisplay[i]; // Obtains appropriate itemstack from list
+            Button b = Instantiate(slotButtonPrefab, slotScreen); // Instantiates button prefab
 
-            Text t = b.GetComponent<Text>();
-            if (items.quantity != 1)
+            Text t = b.GetComponent<Text>(); // Obtains text component from button
+            if (items.quantity != 1) // Names button, listing quantity if more than one of an item is available
             {
                 t.text = items.item.name + ": " + items.quantity;
             }
@@ -259,8 +262,9 @@ public class PlayerInventory : MonoBehaviour
                 t.text = items.item.name;
             }
             
-            b.onClick.AddListener(() => InspectItem(items.item));
+            b.onClick.AddListener(() => InspectItem(items.item)); // Add listener to button to inspect the appropriate item
 
+            // Obtains RectTransform data and positions item at its appropriate place in the stack
             RectTransform br = b.GetComponent<RectTransform>();
             br.anchoredPosition = new Vector3(0, -i * br.rect.height, 0);
         }
@@ -294,18 +298,20 @@ public class PlayerInventory : MonoBehaviour
     */
     public void InspectItem(Item i)
     {
+        // Enables item inspection windows
         inspectScreen.gameObject.SetActive(true);
         //compareScreen.gameObject.SetActive(true);
         flavourTextScreen.gameObject.SetActive(true);
         optionsScreen.gameObject.SetActive(true);
 
+        // Updates item information with the relative information for that item
         itemName.text = i.name;
         itemIcon.sprite = i.icon;
         itemCost.text = "$" + i.price;
         itemAdditionalStats.text = i.miscellaneousStats;
         flavourText.text = i.description;
 
-        if (i.type == ItemType.Weapon)
+        if (i.type == ItemType.Weapon) // If item is a weapon, enable buttons for equipping
         {
             // Enables equip buttons and resets them to add listeners to equip the new item being inspected
             equipRightHandButton.interactable = true;
@@ -323,6 +329,4 @@ public class PlayerInventory : MonoBehaviour
         }
     }
     #endregion
-
-
 }

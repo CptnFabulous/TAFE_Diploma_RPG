@@ -6,6 +6,6 @@ public class ScenePersistentObject : MonoBehaviour
 {
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject); // Prevents object from being destroyed on load
     }
 }
